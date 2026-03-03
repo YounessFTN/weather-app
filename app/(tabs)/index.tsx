@@ -67,26 +67,39 @@ export default function HomeScreen() {
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">
+      <ThemedView style={styles.weatherCard}>
+        <ThemedText style={styles.weatherCity}>
           {weatherData?.name ?? "Chargement..."}
         </ThemedText>
-        <ThemedText type="defaultSemiBold">
+        <ThemedText style={styles.weatherTemp}>
           {weatherData?.main?.temp
-            ? `${Math.round(weatherData.main.temp - 273.15)} °C`
+            ? `${Math.round(weatherData.main.temp - 273.15)}°`
             : "--"}
         </ThemedText>
-        <ThemedText>{weatherData?.weather?.[0]?.description ?? ""}</ThemedText>
-        <ThemedText>
-          {weatherData?.main?.humidity
-            ? `Humidité : ${weatherData.main.humidity} %`
-            : ""}
+        <ThemedText style={styles.weatherDesc}>
+          {weatherData?.weather?.[0]?.description ?? ""}
         </ThemedText>
-        <ThemedText>
-          {weatherData?.wind?.speed
-            ? `Vent : ${weatherData.wind.speed} m/s`
-            : ""}
-        </ThemedText>
+        <ThemedView style={styles.weatherDetails}>
+          <ThemedView style={styles.weatherDetailItem}>
+            <ThemedText style={styles.weatherDetailIcon}>💧</ThemedText>
+            <ThemedText style={styles.weatherDetailValue}>
+              {weatherData?.main?.humidity
+                ? `${weatherData.main.humidity} %`
+                : "--"}
+            </ThemedText>
+            <ThemedText style={styles.weatherDetailLabel}>Humidité</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.weatherSeparator} />
+          <ThemedView style={styles.weatherDetailItem}>
+            <ThemedText style={styles.weatherDetailIcon}>🌬️</ThemedText>
+            <ThemedText style={styles.weatherDetailValue}>
+              {weatherData?.wind?.speed
+                ? `${weatherData.wind.speed} m/s`
+                : "--"}
+            </ThemedText>
+            <ThemedText style={styles.weatherDetailLabel}>Vent</ThemedText>
+          </ThemedView>
+        </ThemedView>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -108,5 +121,64 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     position: "absolute",
+  },
+  weatherCard: {
+    borderRadius: 20,
+    padding: 24,
+    alignItems: "center",
+    gap: 4,
+    marginBottom: 16,
+    backgroundColor: "rgba(161, 206, 220, 0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(161, 206, 220, 0.4)",
+  },
+  weatherCity: {
+    fontSize: 18,
+    letterSpacing: 2,
+    textTransform: "uppercase",
+    opacity: 0.7,
+  },
+  weatherTemp: {
+    fontSize: 80,
+    fontWeight: "200",
+    lineHeight: 90,
+  },
+  weatherDesc: {
+    fontSize: 16,
+    textTransform: "capitalize",
+    opacity: 0.8,
+    marginBottom: 12,
+  },
+  weatherDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 24,
+    marginTop: 8,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  weatherDetailItem: {
+    alignItems: "center",
+    gap: 2,
+  },
+  weatherDetailIcon: {
+    fontSize: 22,
+  },
+  weatherDetailValue: {
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  weatherDetailLabel: {
+    fontSize: 11,
+    opacity: 0.6,
+    textTransform: "uppercase",
+    letterSpacing: 1,
+  },
+  weatherSeparator: {
+    width: 1,
+    height: 40,
+    backgroundColor: "rgba(161, 206, 220, 0.5)",
   },
 });
