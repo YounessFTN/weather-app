@@ -1,15 +1,34 @@
 import { Image } from "expo-image";
+import { useEffect, useState } from "react";
 import { Platform, StyleSheet } from "react-native";
 
 import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import * as Location from "expo-location";
 import { Link } from "expo-router";
 
 export default function HomeScreen() {
-  let lat = 35.6895;
-  let lon = 139.6917;
+  const [localisationUser, setLocalisationUser] = useState({});
+  const [weatherData, setWeatherData] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        console.log("Permission refusée");
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      setLocalisationUser(location.coords);
+    })();
+  }, []);
+
+  let lat = localisationUser.latitude;
+  let lon = localisationUser.longitude;
   let API_KEY = process.env.EXPO_PUBLIC_KEY_OPENWEATHER;
   let part = "hourly,daily";
 
@@ -27,15 +46,14 @@ export default function HomeScreen() {
     fetch(urlApi)
       .then((response) => response.json())
       .then((data) => {
-        console.log(JSON.stringify(data, null, 2));
+        setWeatherData(data);
       })
       .catch((error) => {
-        console.log(urlApi);
-        console.log(API_KEY);
         console.error("Error fetching weather data:", error);
       });
   }
   fetchData();
+  console.log(weatherData);
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
