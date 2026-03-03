@@ -1,17 +1,16 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import * as Location from "expo-location";
-import { Link } from "expo-router";
 
 export default function HomeScreen() {
   const [localisationUser, setLocalisationUser] = useState({});
-  const [weatherData, setWeatherData] = useState({});
+  const [weatherData, setWeatherData] = useState<any>({});
 
   useEffect(() => {
     (async () => {
@@ -69,64 +68,24 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: "cmd + d",
-              android: "cmd + m",
-              web: "F12",
-            })}
-          </ThemedText>{" "}
-          to open developer tools.
+        <ThemedText type="subtitle">
+          {weatherData?.name ?? "Chargement..."}
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction
-              title="Action"
-              icon="cube"
-              onPress={() => alert("Action pressed")}
-            />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert("Share pressed")}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert("Delete pressed")}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
-
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
+        <ThemedText type="defaultSemiBold">
+          {weatherData?.main?.temp
+            ? `${Math.round(weatherData.main.temp - 273.15)} °C`
+            : "--"}
         </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText>{weatherData?.weather?.[0]?.description ?? ""}</ThemedText>
         <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">
-            npm run reset-project
-          </ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          {weatherData?.main?.humidity
+            ? `Humidité : ${weatherData.main.humidity} %`
+            : ""}
+        </ThemedText>
+        <ThemedText>
+          {weatherData?.wind?.speed
+            ? `Vent : ${weatherData.wind.speed} m/s`
+            : ""}
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
